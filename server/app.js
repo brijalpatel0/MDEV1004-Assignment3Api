@@ -14,13 +14,14 @@
 
 import express from "express";
 import mongoose from "mongoose";
-import BookRoutes from "./src/routes/BookRoutes";
-import UserRoutes from "./src/routes/UserRoutes";
-import Book from "./src/models/BookModel";
+import BookRoutes from "./src/routes/BookRoutes.js";
+import UserRoutes from "./src/routes/UserRoutes.js";
+import Book from "./src/models/BookModel.js";
 import dotenv from "dotenv";
 import bodyParser from "body-parser";
-import passport from "passport";
-import User from "./src/models/UserModel";
+// import passport from "passport";
+import User from "./src/models/UserModel.js";
+import passport from "./src/JWT.js";
 
 dotenv.config();
 
@@ -32,21 +33,21 @@ mongoose.connect(mongoURI);
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const expressSession = require("express-session")({
-  secret: process.env.SECRET || "secret",
-  saveUninitialized: false,
-  resave: false,
-});
-app.use(expressSession);
+// const expressSession = require("express-session")({
+//   secret: process.env.SECRET || "secret",
+//   saveUninitialized: false,
+//   resave: false,
+// });
+// app.use(expressSession);
 app.use(passport.initialize());
-app.use(passport.session());
+// app.use(passport.session());
 
 const db = mongoose.connection;
 
-passport.use(User.createStrategy());
+// passport.use(User.createStrategy());
 
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+// passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
 
 db.on("error", (error) => {
   console.error("MongoDB connection error:", error);

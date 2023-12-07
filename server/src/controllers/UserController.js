@@ -1,8 +1,11 @@
 //controllers/UserController.js
-import User from "../models/UserModel";
+import User from "../models/UserModel.js";
 import bcrypt from "bcryptjs";
+import passport from "passport";
+import jwt from "jsonwebtoken";
 
 function userFieldCheck(req, res, next) {
+  //Only checks for absolutely necessary fields
   const { username, password } = req.body;
   if (!username || !password) {
     res.status(400).json({ error: "Invalid input" });
@@ -14,16 +17,27 @@ function userFieldCheck(req, res, next) {
 async function loginUser(req, res, next) {
   const { username, password } = req.body;
   try {
+    // Using async/await instead of callback
     const user = await User.findOne({ username });
+
     if (!user) {
-      return res.status(401).json({ message: "User not found" });
+      return res
+        .status(401)
+        .json({ message: "Authentication Failed: User not found" });
     }
+
     const isMatch = await bcrypt.compare(password, user.password);
-    if (isMatch) {
-      res.status(200).json({ message: "Logged in successfully" });
-    } else {
-      res.status(401).json({ message: "Incorrect password" });
+    if (!isMatch) {
+      return res
+        .status(401)
+        .json({ message: "Authentication Failed: Incorrect password" });
     }
+
+    const jwtPayload = { id: user.id, email: user.email };
+    const token = jwt.sign(jwtPayload, process.env.JWT_SECRET, {
+      expiresIn: "2h",
+    });
+    res.status(200).json({ message: "okay", token: `Bearer ${token}` });
   } catch (error) {
     res.status(500).json({ message: error.message });
   }

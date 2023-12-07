@@ -1,5 +1,5 @@
 // controllers/BookController.js
-import Book from "../models/BookModel";
+import Book from "../models/BookModel.js";
 
 async function createBook(req, res) {
   try {

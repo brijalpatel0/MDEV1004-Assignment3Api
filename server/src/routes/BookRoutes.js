@@ -1,7 +1,7 @@
 // routes/bookRoutes.js
 import { Router } from "express";
-import BookController from "../controllers/BookController";
-import { verifyUser } from "../controllers/UserCheck";
+import BookController from "../controllers/BookController.js";
+import { verifyUser } from "../controllers/UserCheck.js";
 
 const router = Router();
 
